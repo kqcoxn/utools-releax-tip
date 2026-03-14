@@ -6,7 +6,9 @@ export default class ut {
     utools.onPluginEnter(callback);
   }
   static onHide(callback) {
-    utools.onPluginOut(callback);
+    utools.onPluginOut((isKill) => {
+      callback(isKill);
+    });
   }
 
   // 本地存储
@@ -37,5 +39,21 @@ export default class ut {
   // 复制文本
   static copyText(text) {
     utools.copyText(text);
+  }
+
+  // 窗口类型判断
+  static getWindowType() {
+    return utools.getWindowType();
+  }
+  static isMainWindow() {
+    return utools.getWindowType() === "main";
+  }
+  static isDetachWindow() {
+    return utools.getWindowType() === "detach";
+  }
+
+  // 深色主题判断
+  static isDarkColors() {
+    return utools.isDarkColors();
   }
 }

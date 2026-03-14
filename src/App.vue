@@ -25,10 +25,7 @@
 <template>
   <div :id="appName">
     <!-- 背景 -->
-    <div
-      class="bg"
-      :style="{ backgroundColor: timingStore.isFocus ? '#C9DAFF' : '#a3e8c0' }"
-    ></div>
+    <div class="bg" :style="{ backgroundColor: timingStore.isFocus ? '#C9DAFF' : '#a3e8c0' }"></div>
     <!-- 一言 -->
     <Transition>
       <Hitokoto v-if="!statusStore.isUpperPanel" class="hitokoto" />
@@ -78,8 +75,13 @@ function init() {
     // 更新一言
     hitokotoStore.getHitokoto();
   });
-  ut.onHide(() => {
+  ut.onHide((isKill) => {
     statusStore.isOnWindow = false;
+    // 如果插件被结束运行，清除计时
+    if (isKill) {
+      timingStore.clearTimingInterval();
+      return;
+    }
     // 切换为低优先级
     if (timingStore.isTiming) {
       setTimingInterval(2000);

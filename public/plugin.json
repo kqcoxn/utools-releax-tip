@@ -1,14 +1,21 @@
 {
+  "name": "休息提醒",
+  "version": "0.0.8",
+  "description": "定时提醒休息，保护眼睛健康",
+  "author": "kqcoxn",
   "main": "index.html",
   "preload": "preload/services.js",
   "logo": "logo.png",
+  "pluginSetting": {
+    "height": 400
+  },
   "development": {
     "main": "http://localhost:5173"
   },
   "features": [
     {
       "code": "show",
-      "explain": "这是插件应用的第一个功能",
+      "explain": "打开休息提醒主界面",
       "cmds": [
         "休息提醒"
       ]

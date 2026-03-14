@@ -1,4 +1,6 @@
-const isDev = true;
+// 判断是否为开发环境
+const isDev =
+  typeof utools === "undefined" || utools.env?.mode === "development";
 
 const msMulti = 1;
 
