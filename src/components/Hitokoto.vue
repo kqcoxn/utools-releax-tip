@@ -34,12 +34,8 @@
 <template>
   <div :id="appName">
     <Transition>
-      <div
-        v-if="hitokotoStore.hitokoto "
-        class="hitokoto"
-        @click.right="copy"
-        @click.left="hitokotoStore.getHitokoto(true)"
-      >
+      <div v-if="hitokotoStore.hitokoto" class="hitokoto" @click.right="copy"
+        @click.left="hitokotoStore.getHitokoto(true)">
         <span v-show="hitokotoStore.hitokoto">{{
           `「${hitokotoStore.hitokoto}」`
         }}</span>
@@ -51,14 +47,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**变量 */
 const appName = ref("Hitokoto");
-// 控件
-// 状态
-// 数据
 
-/**属性 */
 /**函数 */
 
 // 复制文案
@@ -70,23 +62,17 @@ function copy() {
 
 /**监听 */
 // 挂载
-onMounted(async () => {
+onMounted(() => {
   hitokotoStore.getHitokoto();
 });
 
-/**常量 */
-/**参数 */
 /**导入 */
 // vue
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 // pinia
 import { useHitokotoStore } from "../stores/hitokotoStore";
 const hitokotoStore = useHitokotoStore();
 // utils
 import { Message } from "../utils/notifier";
 import ut from "../utils/utools";
-
-/**组件 */
-
-/** */
 </script>

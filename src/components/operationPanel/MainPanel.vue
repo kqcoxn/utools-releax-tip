@@ -39,60 +39,26 @@
   <div :id="appName">
     <!-- 操作按钮 -->
     <div class="operations">
-      <el-tooltip
-        class="icon-container"
-        effect="light"
-        content="结束计时"
-        placement="bottom"
-      >
-        <div
-          class="icon-container"
-          @click="
-            timingStore.endTiming(timingStore.isFocus ? 'relax' : 'focus')
-          "
-        >
-          <span
-            class="iconfont icon-zhongxinkaishi"
-            :style="{ color: '#37a70f' }"
-          ></span>
+      <el-tooltip class="icon-container" effect="light" content="结束计时" placement="bottom">
+        <div class="icon-container" @click="
+          timingStore.endTiming(timingStore.isFocus ? 'relax' : 'focus')
+          ">
+          <span class="iconfont icon-zhongxinkaishi" :style="{ color: '#37a70f' }"></span>
         </div>
       </el-tooltip>
-      <el-tooltip
-        v-if="timingStore.isTiming"
-        class="icon-container"
-        effect="light"
-        content="暂停计时"
-        placement="bottom"
-      >
+      <el-tooltip v-if="timingStore.isTiming" class="icon-container" effect="light" content="暂停计时" placement="bottom">
         <div class="icon-container" @click="timingStore.pauseTiming">
-          <span
-            class="iconfont icon-shuyi_zanting"
-            :style="{ color: '#c24645', fontSize: '30px' }"
-          ></span>
+          <span class="iconfont icon-shuyi_zanting" :style="{ color: '#c24645', fontSize: '30px' }"></span>
         </div>
       </el-tooltip>
-      <el-tooltip
-        v-else
-        class="icon-container"
-        effect="light"
-        content="继续计时"
-        placement="bottom"
-      >
+      <el-tooltip v-else class="icon-container" effect="light" content="继续计时" placement="bottom">
         <div class="icon-container" @click="timingStore.continueTiming">
           <span class="iconfont icon-jixu" :style="{ color: '#c24645' }"></span>
         </div>
       </el-tooltip>
-      <el-tooltip
-        class="icon-container"
-        effect="light"
-        content="稍后提醒"
-        placement="bottom"
-      >
+      <el-tooltip class="icon-container" effect="light" content="稍后提醒" placement="bottom">
         <div class="icon-container" @click="timingStore.laterRemind">
-          <span
-            class="iconfont icon-yanchi"
-            :style="{ color: '#114fff' }"
-          ></span>
+          <span class="iconfont icon-yanchi" :style="{ color: '#114fff' }"></span>
         </div>
       </el-tooltip>
     </div>
@@ -101,30 +67,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**变量 */
 const appName = ref("MainPanel");
-// 控件
-// 状态
-// 数据
 
-/**属性 */
-/**函数 */
-
-/**监听 */
-// 挂载
-onMounted(async () => {});
-
-/**常量 */
-/**参数 */
 /**导入 */
 // vue
-import { ref, computed, onMounted } from "vue";
+import { ref } from "vue";
 // pinia
 import { useTimingStore } from "../../stores/timingStore";
 const timingStore = useTimingStore();
-
-/**组件 */
-
-/** */
 </script>

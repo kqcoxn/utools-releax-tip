@@ -1,34 +1,41 @@
 import { defineStore } from "pinia";
 
 import { useHitokotoStore } from "./hitokotoStore";
+import type { Panel, PanelKey } from "../types";
 
-const panels = {
+const panels: Record<PanelKey, Panel> = {
   main: {
     key: "main",
     name: "主面板",
   },
+  config: {
+    key: "config",
+    name: "设置",
+  },
 };
 
+interface StatusStoreState {
+  isOnWindow: boolean;
+  operationPanel: Panel;
+}
+
 export const useStatusStore = defineStore("StatusStore", {
-  state: () => ({
+  state: (): StatusStoreState => ({
     isOnWindow: false,
     operationPanel: panels.main,
   }),
+
   getters: {
     // 是否升起窗口
-    isUpperPanel: (state) => {
-      switch (state.operationPanel.key) {
-        case "main":
-          return false;
-        default:
-          return true;
-      }
+    isUpperPanel(state): boolean {
+      return state.operationPanel.key !== "main";
     },
   },
+
   actions: {
     // 切换面板
-    switchPanel(key) {
-      if (key == "main") {
+    switchPanel(key: PanelKey) {
+      if (key === "main") {
         const hitokotoStore = useHitokotoStore();
         hitokotoStore.getHitokoto(false, false);
       }

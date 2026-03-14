@@ -1,7 +1,7 @@
 {
   "name": "休息提醒",
-  "version": "0.0.8",
-  "description": "定时提醒休息，保护眼睛健康",
+  "version": "1.0.0",
+  "description": "定时提醒休息，保护眼睛健康，支持后台计时",
   "author": "kqcoxn",
   "main": "index.html",
   "preload": "preload/services.js",

@@ -24,13 +24,8 @@
 <template>
   <div :id="appName">
     <div class="right">
-      <el-tooltip
-        class="icon-container"
-        effect="light"
-        content="设置"
-        placement="bottom"
-      >
-        <div class="btn config" @click="statusStore.operationPanel = 'config'">
+      <el-tooltip class="icon-container" effect="light" content="设置" placement="bottom">
+        <div class="btn config" @click="statusStore.switchPanel('config')">
           <svg class="icon" aria-hidden="true" style="font-size: 48px">
             <use xlink:href="#icon-a-080_shezhi"></use>
           </svg>
@@ -40,30 +35,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**变量 */
 const appName = ref("TopBar");
-// 控件
-// 状态
-// 数据
 
-/**属性 */
-/**函数 */
-
-/**监听 */
-// 挂载
-onMounted(async () => {});
-
-/**常量 */
-/**参数 */
 /**导入 */
 // vue
-import { ref, computed, onMounted } from "vue";
+import { ref } from "vue";
 // pinia
 import { useStatusStore } from "../stores/statusStore";
 const statusStore = useStatusStore();
-
-/**组件 */
-
-/** */
 </script>

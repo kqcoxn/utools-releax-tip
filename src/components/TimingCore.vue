@@ -41,21 +41,14 @@
 
 <template>
   <div :id="appName">
-    <el-progress
-      type="dashboard"
-      :width="300"
-      :stroke-width="10"
+    <el-progress type="dashboard" :width="300" :stroke-width="10"
       :percentage="timingStore.isFocus ? focusPercentage : relaxPercentage"
-      :color="timingStore.isFocus ? '#114fff' : '#15d26c'"
-    >
+      :color="timingStore.isFocus ? '#114fff' : '#15d26c'">
       <template>
         <span></span>
       </template>
     </el-progress>
-    <div
-      class="center"
-      :style="{ backgroundColor: timingStore.isFocus ? '#114fff' : '#15d26c' }"
-    >
+    <div class="center" :style="{ backgroundColor: timingStore.isFocus ? '#114fff' : '#15d26c' }">
       <div class="text">
         {{ `- ${timingStore.timingState.tip} -` }}
       </div>
@@ -66,12 +59,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**变量 */
 const appName = ref("TimingCore");
-// 控件
-// 状态
-// 数据
 
 /**属性 */
 
@@ -93,30 +83,18 @@ const relaxTimeStr = computed(() => {
 const focusPercentage = computed(() => {
   return (timingStore.restTime / timingStore.focusTime) * 100;
 });
+
 const relaxPercentage = computed(() => {
   return Math.min(timingStore.passTime / timingStore.relaxTime, 1) * 100;
 });
 
-/**函数 */
-
-/**监听 */
-// 挂载
-onMounted(async () => {
-});
-
-/**常量 */
-/**参数 */
 /**导入 */
 // vue
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 // pinia
 import { useTimingStore } from "../stores/timingStore";
 const timingStore = useTimingStore();
 // utils
 import settings from "../settings";
 import { Timer } from "kqtk";
-
-/**组件 */
-
-/** */
 </script>

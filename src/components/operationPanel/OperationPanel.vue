@@ -52,52 +52,33 @@
 
 <template>
   <div :id="appName">
-    <div
-      class="panel"
-      :style="{ height: statusStore.isUpperPanel ? '90%' : '50%' }"
-    >
+    <div class="panel" :style="{ height: statusStore.isUpperPanel ? '90%' : '50%' }">
       <Transition>
-        <div
-          v-if="statusStore.isUpperPanel"
-          class="bar"
-          @click="statusStore.switchPanel('main')"
-        >
+        <div v-if="statusStore.isUpperPanel" class="bar" @click="statusStore.switchPanel('main')">
           <span class="iconfont icon-xiajiantou"></span>
         </div>
       </Transition>
       <!-- 面板 -->
       <Transition>
-        <MainPanel v-if="statusStore.operationPanel.key == 'main'" />
+        <MainPanel v-if="statusStore.operationPanel.key === 'main'" />
+        <ConfigPanel v-else-if="statusStore.operationPanel.key === 'config'" />
       </Transition>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**变量 */
 const appName = ref("OperationPanel");
-// 控件
-// 状态
-// 数据
 
-/**属性 */
-/**函数 */
-
-/**监听 */
-// 挂载
-onMounted(async () => {});
-
-/**常量 */
-/**参数 */
 /**导入 */
 // vue
-import { ref, computed, onMounted } from "vue";
+import { ref } from "vue";
 // pinia
 import { useStatusStore } from "../../stores/statusStore";
 const statusStore = useStatusStore();
 
 /**组件 */
 import MainPanel from "./MainPanel.vue";
-
-/** */
+import ConfigPanel from "./ConfigPanel.vue";
 </script>
