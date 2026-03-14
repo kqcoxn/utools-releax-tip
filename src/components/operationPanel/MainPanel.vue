@@ -16,6 +16,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      cursor: pointer;
       transition: all 0.2s ease;
 
       &:not(:first-child) {

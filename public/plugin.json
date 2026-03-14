@@ -7,7 +7,7 @@
   "preload": "preload/services.js",
   "logo": "logo.png",
   "pluginSetting": {
-    "height": 400
+    "height": 520
   },
   "development": {
     "main": "http://localhost:5173"
