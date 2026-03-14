@@ -199,6 +199,8 @@
         overflow-x: hidden;
         margin: -20px;
         padding: 20px;
+        // 增加底部 padding 避免内容被 actions 遮挡
+        padding-bottom: 80px;
 
         &::-webkit-scrollbar {
             width: 0;
@@ -207,12 +209,17 @@
     }
 
     .actions {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
         display: flex;
         justify-content: flex-end;
         gap: 12px;
-        padding-top: 16px;
-        border-top: 1px solid #e2e8f0;
-        flex-shrink: 0;
+        padding: 16px 20px;
+        background: linear-gradient(180deg, rgba(248, 250, 252, 0) 0%, #f8fafc 30%, #f1f5f9 100%);
+        border-top: none;
+        z-index: 10;
 
         .el-button {
             min-width: 90px;
