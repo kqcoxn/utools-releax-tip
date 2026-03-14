@@ -1,0 +1,17 @@
+{
+  "main": "index.html",
+  "preload": "preload/services.js",
+  "logo": "logo.png",
+  "development": {
+    "main": "http://localhost:5173"
+  },
+  "features": [
+    {
+      "code": "show",
+      "explain": "这是插件应用的第一个功能",
+      "cmds": [
+        "休息提醒"
+      ]
+    }
+  ]
+}

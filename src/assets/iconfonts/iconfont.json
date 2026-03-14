@@ -1,0 +1,51 @@
+{
+  "id": "4839474",
+  "name": "uTools-rest-remainder",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "16904293",
+      "name": "下箭头",
+      "font_class": "xiajiantou",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    },
+    {
+      "icon_id": "41172874",
+      "name": "080_设置",
+      "font_class": "a-080_shezhi",
+      "unicode": "e7bc",
+      "unicode_decimal": 59324
+    },
+    {
+      "icon_id": "22779669",
+      "name": "暂停",
+      "font_class": "shuyi_zanting",
+      "unicode": "e669",
+      "unicode_decimal": 58985
+    },
+    {
+      "icon_id": "14931011",
+      "name": "继续",
+      "font_class": "jixu",
+      "unicode": "e662",
+      "unicode_decimal": 58978
+    },
+    {
+      "icon_id": "23012724",
+      "name": "重新开始",
+      "font_class": "zhongxinkaishi",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "26356300",
+      "name": "延迟",
+      "font_class": "yanchi",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    }
+  ]
+}
