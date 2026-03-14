@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Timer } from "kqtk";
+import { Timer } from "../utils/timer";
 
 import settings from "../settings";
 import { Message } from "../utils/notifier";

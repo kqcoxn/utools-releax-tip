@@ -96,5 +96,5 @@ import { useTimingStore } from "../stores/timingStore";
 const timingStore = useTimingStore();
 // utils
 import settings from "../settings";
-import { Timer } from "kqtk";
+import { Timer } from "../utils/timer";
 </script>

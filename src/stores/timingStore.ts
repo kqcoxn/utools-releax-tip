@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
-import { Timer } from "kqtk";
+import { Timer } from "../utils/timer";
 
 import settings from "../settings";
 import ut from "../utils/utools";
 import { useStatusStore } from "./statusStore";
 import type { TimingState, TimingStateKey } from "../types";
 
-const timer = new Timer(false, { defaultUnit: "ms", defaultPrecision: 0 });
+const timer = new Timer(false);
 
 const timingStates: Record<TimingStateKey, TimingState> = {
   focus: {
