@@ -106,9 +106,14 @@ export class TimerService {
   showNotification(title: string, body: string): void {
     if (this.services) {
       this.services.showNotification(title, body);
-    } else {
+    } else if (typeof window !== "undefined" && "utools" in window) {
       // 降级使用 utools API
-      utools.showNotification(`${title}\n${body}`);
+      (window as unknown as { utools: typeof utools }).utools.showNotification(
+        `${title}\n${body}`,
+      );
+    } else {
+      // 浏览器环境使用 alert
+      alert(`${title}\n${body}`);
     }
   }
 
@@ -118,8 +123,14 @@ export class TimerService {
   setStore(key: string, value: unknown): void {
     if (this.services) {
       this.services.setStore(key, value);
+    } else if (typeof window !== "undefined" && "utools" in window) {
+      (window as unknown as { utools: typeof utools }).utools.dbStorage.setItem(
+        key,
+        value,
+      );
     } else {
-      utools.dbStorage.setItem(key, value);
+      // 浏览器环境使用 localStorage
+      localStorage.setItem(key, JSON.stringify(value));
     }
   }
 
@@ -129,8 +140,19 @@ export class TimerService {
   getStore<T>(key: string): T | null {
     if (this.services) {
       return this.services.getStore(key) as T | null;
+    } else if (typeof window !== "undefined" && "utools" in window) {
+      return (
+        window as unknown as { utools: typeof utools }
+      ).utools.dbStorage.getItem(key) as T | null;
     }
-    return utools.dbStorage.getItem(key) as T | null;
+    // 浏览器环境使用 localStorage
+    const item = localStorage.getItem(key);
+    if (item === null) return null;
+    try {
+      return JSON.parse(item) as T;
+    } catch {
+      return item as unknown as T;
+    }
   }
 }
 

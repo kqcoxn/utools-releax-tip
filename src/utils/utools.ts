@@ -1,6 +1,15 @@
 /**
  * utools API 封装类
  */
+
+// 检查是否在 uTools 环境中运行
+const isUtoolsEnv = typeof window !== "undefined" && "utools" in window;
+
+// 获取 utools 对象（如果在 uTools 环境中）
+const utoolsObj = isUtoolsEnv
+  ? (window as unknown as { utools: typeof utools }).utools
+  : null;
+
 export class Utools {
   // ==================== 回调事件 ====================
 
@@ -8,14 +17,16 @@ export class Utools {
    * 注册进入插件回调
    */
   static onEnter(callback: () => void): void {
-    utools.onPluginEnter(callback);
+    if (!utoolsObj) return;
+    utoolsObj.onPluginEnter(callback);
   }
 
   /**
    * 注册退出插件回调
    */
   static onHide(callback: (isKill: boolean) => void): void {
-    utools.onPluginOut(callback);
+    if (!utoolsObj) return;
+    utoolsObj.onPluginOut(callback);
   }
 
   // ==================== 本地存储 ====================
@@ -24,14 +35,16 @@ export class Utools {
    * 获取存储值
    */
   static get<T>(key: string): T | null {
-    return utools.dbStorage.getItem(key) as T | null;
+    if (!utoolsObj) return null;
+    return utoolsObj.dbStorage.getItem(key) as T | null;
   }
 
   /**
    * 设置存储值
    */
   static set<T>(key: string, value: T): void {
-    utools.dbStorage.setItem(key, value);
+    if (!utoolsObj) return;
+    utoolsObj.dbStorage.setItem(key, value);
   }
 
   /**
@@ -50,7 +63,8 @@ export class Utools {
    * 删除存储值
    */
   static remove(key: string): void {
-    utools.dbStorage.removeItem(key);
+    if (!utoolsObj) return;
+    utoolsObj.dbStorage.removeItem(key);
   }
 
   // ==================== 窗口控制 ====================
@@ -59,21 +73,24 @@ export class Utools {
    * 显示窗口
    */
   static showWindow(_isOnWindow: boolean): void {
-    utools.showMainWindow();
+    if (!utoolsObj) return;
+    utoolsObj.showMainWindow();
   }
 
   /**
    * 隐藏窗口
    */
   static hideWindow(restorePreWindow = true): void {
-    utools.hideMainWindow(restorePreWindow);
+    if (!utoolsObj) return;
+    utoolsObj.hideMainWindow(restorePreWindow);
   }
 
   /**
    * 退出插件
    */
   static outPlugin(isKill = false): void {
-    utools.outPlugin(isKill);
+    if (!utoolsObj) return;
+    utoolsObj.outPlugin(isKill);
   }
 
   // ==================== 通知 ====================
@@ -82,7 +99,12 @@ export class Utools {
    * 显示系统通知
    */
   static showNotification(title: string, body?: string): void {
-    utools.showNotification(body ? `${title}\n${body}` : title);
+    if (!utoolsObj) {
+      // 在浏览器环境中使用 alert 降级
+      alert(body ? `${title}\n${body}` : title);
+      return;
+    }
+    utoolsObj.showNotification(body ? `${title}\n${body}` : title);
   }
 
   // ==================== 复制 ====================
@@ -91,7 +113,12 @@ export class Utools {
    * 复制文本到剪贴板
    */
   static copyText(text: string): void {
-    utools.copyText(text);
+    if (!utoolsObj) {
+      // 在浏览器环境中使用 navigator.clipboard 降级
+      navigator.clipboard?.writeText(text);
+      return;
+    }
+    utoolsObj.copyText(text);
   }
 
   // ==================== 窗口类型判断 ====================
@@ -100,7 +127,8 @@ export class Utools {
    * 获取窗口类型
    */
   static getWindowType(): "main" | "detach" | "browser" {
-    return utools.getWindowType();
+    if (!utoolsObj) return "browser";
+    return utoolsObj.getWindowType();
   }
 
   /**
@@ -123,7 +151,11 @@ export class Utools {
    * 是否为深色主题
    */
   static isDarkColors(): boolean {
-    return utools.isDarkColors();
+    if (!utoolsObj) {
+      // 在浏览器环境中使用 matchMedia 检测
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    return utoolsObj.isDarkColors();
   }
 }
 
