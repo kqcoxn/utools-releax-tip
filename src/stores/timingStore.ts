@@ -124,10 +124,10 @@ export const useTimingStore = defineStore("TimingStore", {
       this.clearTimingInterval();
       const statusStore = useStatusStore();
       ut.showWindow(statusStore.isOnWindow);
+      this.startTiming();
       if (toState) {
         this.changeState(toState);
       }
-      this.startTiming();
     },
 
     // 稍后提醒
