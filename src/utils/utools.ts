@@ -5,7 +5,7 @@
 // 检查是否在 uTools 环境中运行
 const isUtoolsEnv = typeof window !== "undefined" && "utools" in window;
 
-// 获取 utools 对象（如果在 uTools 环境中）
+// 获取 utools 对象
 const utoolsObj = isUtoolsEnv
   ? (window as unknown as { utools: typeof utools }).utools
   : null;
@@ -75,6 +75,21 @@ export class Utools {
   static showWindow(_isOnWindow: boolean): void {
     if (!utoolsObj) return;
     utoolsObj.showMainWindow();
+    (utoolsObj as unknown as { redirect: (label: string) => void }).redirect(
+      "休息提醒",
+    );
+  }
+
+  /**
+   * 强制显示窗口
+   */
+  static forceShowWindow(): void {
+    if (!utoolsObj) return;
+    utoolsObj.showNotification("休息时间到，请休息一下", "show");
+    utoolsObj.showMainWindow();
+    (utoolsObj as unknown as { redirect: (label: string) => void }).redirect(
+      "休息提醒",
+    );
   }
 
   /**
@@ -100,7 +115,6 @@ export class Utools {
    */
   static showNotification(title: string, body?: string): void {
     if (!utoolsObj) {
-      // 在浏览器环境中使用 alert 降级
       alert(body ? `${title}\n${body}` : title);
       return;
     }
@@ -114,7 +128,6 @@ export class Utools {
    */
   static copyText(text: string): void {
     if (!utoolsObj) {
-      // 在浏览器环境中使用 navigator.clipboard 降级
       navigator.clipboard?.writeText(text);
       return;
     }
@@ -152,7 +165,6 @@ export class Utools {
    */
   static isDarkColors(): boolean {
     if (!utoolsObj) {
-      // 在浏览器环境中使用 matchMedia 检测
       return window.matchMedia("(prefers-color-scheme: dark)").matches;
     }
     return utoolsObj.isDarkColors();
