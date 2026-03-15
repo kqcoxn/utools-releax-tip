@@ -132,13 +132,8 @@ export const useTimingStore = defineStore("TimingStore", {
     // 结束计时
     endTiming(toState: TimingStateKey | null = null) {
       this.clearTimingInterval();
-      // 先切换状态，再显示窗口
       if (toState) {
         this.changeState(toState);
-        // 切换到休息状态时，使用强制显示窗口
-        if (toState === "relax") {
-          ut.forceShowWindow();
-        }
       }
       const statusStore = useStatusStore();
       ut.showWindow(statusStore.isOnWindow);
