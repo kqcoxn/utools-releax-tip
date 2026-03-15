@@ -72,7 +72,9 @@ export class Utools {
   /**
    * 显示窗口
    */
-  static showWindow(_isOnWindow: boolean): void {
+  static showWindow(isOnWindow: boolean): void {
+    // 如果窗口已经在前台，不需要再显示，避免闪烁
+    if (isOnWindow) return;
     if (!utoolsObj) return;
     utoolsObj.showMainWindow();
     (utoolsObj as unknown as { redirect: (label: string) => void }).redirect(
@@ -85,7 +87,6 @@ export class Utools {
    */
   static forceShowWindow(): void {
     if (!utoolsObj) return;
-    utoolsObj.showNotification("休息时间到，请休息一下", "show");
     utoolsObj.showMainWindow();
     (utoolsObj as unknown as { redirect: (label: string) => void }).redirect(
       "休息提醒",

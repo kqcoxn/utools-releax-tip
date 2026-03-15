@@ -27,6 +27,7 @@ interface TimingStoreState {
   laterTime: number;
   passedTime: number;
   roundTime: number;
+  lastForceShowSecond: number;
 }
 
 export const useTimingStore = defineStore("TimingStore", {
@@ -38,6 +39,7 @@ export const useTimingStore = defineStore("TimingStore", {
     laterTime: 3 * settings.timing.minMulti,
     passedTime: 0,
     roundTime: 0,
+    lastForceShowSecond: -1,
   }),
 
   getters: {
@@ -84,9 +86,16 @@ export const useTimingStore = defineStore("TimingStore", {
           this.endTiming("relax");
         }
         // 防止忽略
-        else if (this.isRelax && Math.round(this.passTime / 1000) % 10 === 0) {
-          const statusStore = useStatusStore();
-          ut.showWindow(statusStore.isOnWindow);
+        else if (this.isRelax) {
+          const currentSecond = Math.round(this.passTime / 1000);
+          if (
+            currentSecond % 10 === 0 &&
+            currentSecond !== this.lastForceShowSecond
+          ) {
+            this.lastForceShowSecond = currentSecond;
+            const statusStore = useStatusStore();
+            ut.showWindow(statusStore.isOnWindow);
+          }
         }
       }, interval);
     },
@@ -95,6 +104,7 @@ export const useTimingStore = defineStore("TimingStore", {
     startTiming(passed = 0) {
       this.passedTime = passed;
       this.roundTime = 0;
+      this.lastForceShowSecond = -1;
       timer.start();
       this.setTimingInterval();
     },
