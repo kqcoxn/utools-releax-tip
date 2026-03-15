@@ -58,16 +58,8 @@ export class Utools {
   /**
    * 显示窗口
    */
-  static showWindow(isOnWindow: boolean): void {
-    if (isOnWindow) {
-      utools.showMainWindow();
-    } else {
-      // 使用 outPlugin 后再 redirect 来重新打开插件
-      utools.outPlugin();
-      setTimeout(() => {
-        utools.redirect("休息提醒", "");
-      }, 100);
-    }
+  static showWindow(_isOnWindow: boolean): void {
+    utools.showMainWindow();
   }
 
   /**
