@@ -334,22 +334,29 @@
         <!-- 操作按钮 -->
         <div class="actions">
             <el-button @click="handleReset">重置默认</el-button>
-            <el-button type="primary" @click="handleSave">保存设置</el-button>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+/**导入 */
+// vue
+import { ref, watch } from "vue";
+// pinia
+import { useSettingsStore } from "../../stores/settingsStore";
+const settingsStore = useSettingsStore();
+import { useTimingStore } from "../../stores/timingStore";
+const timingStore = useTimingStore();
+// utils
+import settings from "../../settings";
+
 /**变量 */
 const appName = ref("ConfigPanel");
 
 /**函数 */
-
 // 保存设置
-function handleSave() {
+function saveSettings() {
     settingsStore.saveSettings();
-    Message.success("设置已保存");
-
     // 更新计时器时间
     const minMulti = settings.timing.minMulti;
     timingStore.focusTime = settingsStore.focusTime * minMulti;
@@ -360,18 +367,25 @@ function handleSave() {
 // 重置设置
 function handleReset() {
     settingsStore.resetSettings();
-    Message.success("已重置为默认设置");
+    // 更新计时器时间
+    const minMulti = settings.timing.minMulti;
+    timingStore.focusTime = settingsStore.focusTime * minMulti;
+    timingStore.relaxTime = settingsStore.relaxTime * minMulti;
+    timingStore.laterTime = settingsStore.laterTime * minMulti;
 }
 
-/**导入 */
-// vue
-import { ref } from "vue";
-// pinia
-import { useSettingsStore } from "../../stores/settingsStore";
-const settingsStore = useSettingsStore();
-import { useTimingStore } from "../../stores/timingStore";
-const timingStore = useTimingStore();
-// utils
-import settings from "../../settings";
-import { Message } from "../../utils/notifier";
+/**监听设置变化自动保存 */
+watch(
+    () => [
+        settingsStore.focusTime,
+        settingsStore.relaxTime,
+        settingsStore.laterTime,
+        settingsStore.hitokotoEnabled,
+        settingsStore.autoStartTiming,
+    ],
+    () => {
+        saveSettings();
+    },
+    { deep: true }
+);
 </script>
