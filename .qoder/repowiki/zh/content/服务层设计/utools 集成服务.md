@@ -32,7 +32,7 @@
 10. [附录：使用示例与最佳实践](#附录使用示例与最佳实践)
 
 ## 简介
-本项目为一个基于 Vue 3 + Pinia 的 utools 插件，提供“休息提醒”功能，支持定时专注与休息循环、后台计时、系统通知、本地存储、主题适配与窗口控制等特性。插件通过预加载脚本注入 Electron 的 Node.js 能力，结合 utools API 实现跨环境运行与降级兼容。
+本项目为一个基于 Vue 3 + Pinia 的 utools 插件，提供"休息提醒"功能，支持定时专注与休息循环、后台计时、系统通知、本地存储、主题适配与窗口控制等特性。插件通过预加载脚本注入 Electron 的 Node.js 能力，结合 utools API 实现跨环境运行与降级兼容。**新增的强制窗口显示能力**确保重要提醒不会被用户忽略，通过 `forceShowWindow()` 方法提供多层通知策略。
 
 ## 项目结构
 - 插件元数据与入口
@@ -43,7 +43,7 @@
 - 功能实现
   - src/App.vue：应用根组件，负责初始化、生命周期事件绑定、计时与通知联动。
   - src/services/timerService.ts：计时服务封装，统一前后台计时与存储访问。
-  - src/utils/utools.ts：对 utools API 的统一封装，提供环境检测与降级策略。
+  - src/utils/utools.ts：对 utools API 的统一封装，提供环境检测与降级策略，**新增强制窗口显示能力**。
   - src/stores/*：状态管理（设置、计时、状态、一言）。
   - src/utils/*：工具模块（计时器、消息通知、环境配置）。
   - src/components/*：UI 组件（操作面板、顶部栏、计时核心等）。
@@ -97,10 +97,10 @@ APP --> MP
 - [main.ts:1-19](file://src/main.ts#L1-L19)
 - [App.vue:1-145](file://src/App.vue#L1-L145)
 - [timerService.ts:1-161](file://src/services/timerService.ts#L1-L161)
-- [utools.ts:1-165](file://src/utils/utools.ts#L1-L165)
+- [utools.ts:1-176](file://src/utils/utools.ts#L1-L176)
 - [statusStore.ts:1-46](file://src/stores/statusStore.ts#L1-L46)
 - [settingsStore.ts:1-87](file://src/stores/settingsStore.ts#L1-L87)
-- [timingStore.ts:1-141](file://src/stores/timingStore.ts#L1-L141)
+- [timingStore.ts:1-146](file://src/stores/timingStore.ts#L1-L146)
 - [timer.ts:1-66](file://src/utils/timer.ts#L1-L66)
 - [notifier.ts:1-62](file://src/utils/notifier.ts#L1-L62)
 - [settings.ts:1-50](file://src/settings.ts#L1-L50)
@@ -115,14 +115,14 @@ APP --> MP
 
 ## 核心组件
 - utools API 封装（Utools）
-  - 提供插件生命周期回调注册、窗口控制、系统通知、复制、主题与窗口类型判断、本地存储读写等能力，并在非 utools 环境下提供降级方案。
+  - 提供插件生命周期回调注册、窗口控制、系统通知、复制、主题与窗口类型判断、本地存储读写等能力，并在非 utools 环境下提供降级方案。**新增强制窗口显示能力**，通过 `forceShowWindow()` 方法确保重要提醒不会被用户忽略。
 - 计时服务（TimerService）
   - 通过预加载注入的服务实现后台计时、剩余时间查询、计时结束回调、系统通知与本地存储；在无后台支持时回退至前台计时与 utools API。
 - 预加载服务（services.js）
   - 在渲染进程通过 window.services 注入 Electron Notification、utools.dbStorage 以及自定义后台计时器实现。
 - 状态管理
   - settingsStore：用户设置持久化与默认值加载。
-  - timingStore：专注/休息状态切换、计时器周期、剩余时间计算与定时刷新。
+  - timingStore：专注/休息状态切换、计时器周期、剩余时间计算与定时刷新，**集成强制窗口显示策略**。
   - statusStore：窗口显示状态与面板切换。
 - 工具模块
   - timer：时间戳与格式化工具。
@@ -130,22 +130,22 @@ APP --> MP
   - settings：开发环境判断与时间倍率常量。
 
 **章节来源**
-- [utools.ts:1-165](file://src/utils/utools.ts#L1-L165)
+- [utools.ts:1-176](file://src/utils/utools.ts#L1-L176)
 - [timerService.ts:1-161](file://src/services/timerService.ts#L1-L161)
 - [services.js:1-102](file://public/preload/services.js#L1-L102)
 - [settingsStore.ts:1-87](file://src/stores/settingsStore.ts#L1-L87)
-- [timingStore.ts:1-141](file://src/stores/timingStore.ts#L1-L141)
+- [timingStore.ts:1-146](file://src/stores/timingStore.ts#L1-L146)
 - [statusStore.ts:1-46](file://src/stores/statusStore.ts#L1-L46)
 - [timer.ts:1-66](file://src/utils/timer.ts#L1-L66)
 - [notifier.ts:1-62](file://src/utils/notifier.ts#L1-L62)
 - [settings.ts:1-50](file://src/settings.ts#L1-L50)
 
 ## 架构总览
-插件采用“预加载注入 + 统一 API 封装 + 状态驱动”的架构：
+插件采用"预加载注入 + 统一 API 封装 + 状态驱动"的架构：
 - 预加载脚本在渲染进程暴露 window.services，提供 Electron 能力与 utools.dbStorage。
-- Utools 封装在运行时根据环境选择原生 utools API 或浏览器降级方案。
+- Utools 封装在运行时根据环境选择原生 utools API 或浏览器降级方案，**新增强制窗口显示能力**。
 - TimerService 统一前后台计时逻辑，按需调用 window.services 或 utools API。
-- Pinia 管理用户设置、计时状态与界面状态，驱动 UI 与通知行为。
+- Pinia 管理用户设置、计时状态与界面状态，驱动 UI 与通知行为，**集成多层通知策略**。
 
 ```mermaid
 graph TB
@@ -156,15 +156,18 @@ WS --> UDB["utools.dbStorage"]
 R --> UT["Utools 封装<br/>src/utils/utools.ts"]
 UT --> UA["utools API"]
 UT --> BR["浏览器降级<br/>alert/clipboard/matchMedia"]
+UT --> FSW["强制窗口显示<br/>forceShowWindow()"]
 R --> ST["Pinia Stores<br/>settings/timing/status"]
 R --> UI["UI Components<br/>MainPanel.vue 等"]
+ST --> FSW
 ```
 
 **图表来源**
 - [App.vue:1-145](file://src/App.vue#L1-L145)
 - [timerService.ts:1-161](file://src/services/timerService.ts#L1-L161)
 - [services.js:1-102](file://public/preload/services.js#L1-L102)
-- [utools.ts:1-165](file://src/utils/utools.ts#L1-L165)
+- [utools.ts:1-176](file://src/utils/utools.ts#L1-L176)
+- [timingStore.ts:128-131](file://src/stores/timingStore.ts#L128-L131)
 
 ## 详细组件分析
 
@@ -179,6 +182,8 @@ R --> UI["UI Components<br/>MainPanel.vue 等"]
   - showNotification 支持标题与正文；copyText 支持复制文本。
 - 主题与窗口类型
   - isDarkColors、getWindowType/isMainWindow/isDetachWindow 用于主题适配与窗口类型判断。
+- **新增：强制窗口显示能力**
+  - **forceShowWindow()**：提供多层通知策略，确保重要提醒不会被用户忽略。与 `showWindow()` 方法功能相同，但专门用于关键状态转换场景。
 
 ```mermaid
 classDiagram
@@ -190,6 +195,7 @@ class Utools {
 +load(key, default) T
 +remove(key) void
 +showWindow(isOnWindow) void
++forceShowWindow() void
 +hideWindow(restorePreWindow) void
 +outPlugin(isKill) void
 +showNotification(title, body) void
@@ -202,10 +208,10 @@ class Utools {
 ```
 
 **图表来源**
-- [utools.ts:13-165](file://src/utils/utools.ts#L13-L165)
+- [utools.ts:13-176](file://src/utils/utools.ts#L13-L176)
 
 **章节来源**
-- [utools.ts:1-165](file://src/utils/utools.ts#L1-L165)
+- [utools.ts:1-176](file://src/utils/utools.ts#L1-L176)
 
 ### 计时服务（TimerService）
 - 后台计时
@@ -244,7 +250,7 @@ end
 - [App.vue:69-114](file://src/App.vue#L69-L114)
 - [timerService.ts:59-118](file://src/services/timerService.ts#L59-L118)
 - [services.js:22-67](file://public/preload/services.js#L22-L67)
-- [utools.ts:101-108](file://src/utils/utools.ts#L101-L108)
+- [utools.ts:115-121](file://src/utils/utools.ts#L115-L121)
 
 **章节来源**
 - [timerService.ts:1-161](file://src/services/timerService.ts#L1-L161)
@@ -285,7 +291,7 @@ EndCall --> End(["完成"])
   - onEnter：窗口显示、提高计时刷新频率、更新一言。
   - onHide：窗口隐藏；若插件被结束运行则清理计时与后台计时；否则降低刷新频率。
 - 状态驱动
-  - timingStore：专注/休息状态切换、计时器周期、剩余时间计算。
+  - timingStore：专注/休息状态切换、计时器周期、剩余时间计算。**集成强制窗口显示策略**，在关键状态转换时确保用户注意到提醒。
   - statusStore：窗口显示状态与面板切换。
   - settingsStore：用户设置持久化与默认值加载。
 
@@ -300,6 +306,7 @@ App->>TS : initialize(onTimerEnd)
 TS-->>App : onTimerEnd(state)
 App->>TS : showNotification(...)
 App->>UA : showWindow(isOnWindow)
+App->>UA : forceShowWindow()
 App->>UA : onEnter()/onHide()
 UA-->>App : 回调(isKill?)
 App->>ST : 切换面板/更新状态
@@ -316,7 +323,39 @@ App->>ST : 切换面板/更新状态
 - [App.vue:1-145](file://src/App.vue#L1-L145)
 - [settingsStore.ts:1-87](file://src/stores/settingsStore.ts#L1-L87)
 - [statusStore.ts:1-46](file://src/stores/statusStore.ts#L1-L46)
-- [timingStore.ts:1-141](file://src/stores/timingStore.ts#L1-L141)
+- [timingStore.ts:1-146](file://src/stores/timingStore.ts#L1-L146)
+
+### 强制窗口显示策略
+- **设计目的**
+  - 确保重要提醒不会被用户忽略，特别是在从专注状态切换到休息状态的关键时刻。
+- **实现机制**
+  - `forceShowWindow()` 方法与 `showWindow()` 功能相同，但专门用于关键状态转换场景。
+  - 在计时结束并切换到休息状态时调用，确保用户注意到休息提醒。
+- **使用场景**
+  - 从专注状态切换到休息状态时的强制显示。
+  - 防止用户忽略的重要通知场景。
+
+```mermaid
+flowchart TD
+Start(["计时结束"]) --> Check{"是否切换到休息状态?"}
+Check --> |是| Force["调用 forceShowWindow()"]
+Force --> Show["强制显示窗口"]
+Check --> |否| Normal["调用 showWindow()"]
+Normal --> Check2{"窗口是否在前台?"}
+Check2 --> |是| Show2["普通显示窗口"]
+Check2 --> |否| Show3["显示窗口"]
+Show --> End(["完成"])
+Show2 --> End
+Show3 --> End
+```
+
+**图表来源**
+- [timingStore.ts:128-131](file://src/stores/timingStore.ts#L128-L131)
+- [utools.ts:86-92](file://src/utils/utools.ts#L86-L92)
+
+**章节来源**
+- [timingStore.ts:128-131](file://src/stores/timingStore.ts#L128-L131)
+- [utools.ts:86-92](file://src/utils/utools.ts#L86-L92)
 
 ### UI 组件与交互
 - MainPanel：提供结束计时、暂停/继续、稍后提醒等操作按钮，点击后调用 timingStore 的对应方法。
@@ -345,6 +384,8 @@ APP --> PIN["Pinia Stores"]
 UTL --> UA["utools API"]
 TSVC --> UA
 TSVC --> LS["localStorage(浏览器)"]
+UTL --> FSW["强制窗口显示"]
+PIN --> FSW
 ```
 
 **图表来源**
@@ -353,7 +394,8 @@ TSVC --> LS["localStorage(浏览器)"]
 - [main.ts:1-19](file://src/main.ts#L1-L19)
 - [App.vue:1-145](file://src/App.vue#L1-L145)
 - [timerService.ts:1-161](file://src/services/timerService.ts#L1-L161)
-- [utools.ts:1-165](file://src/utils/utools.ts#L1-L165)
+- [utools.ts:1-176](file://src/utils/utools.ts#L1-L176)
+- [timingStore.ts:128-131](file://src/stores/timingStore.ts#L128-L131)
 
 **章节来源**
 - [package.json:1-23](file://package.json#L1-L23)
@@ -369,6 +411,8 @@ TSVC --> LS["localStorage(浏览器)"]
   - 优先使用 utools.dbStorage 或 Electron Notification，浏览器降级仅在必要时使用 alert/clipboard，避免额外开销。
 - UI 更新
   - 使用 Pinia getter 计算剩余时间与状态，减少重复计算；过渡动画与组件懒加载可进一步优化。
+- **强制窗口显示优化**
+  - `forceShowWindow()` 仅在关键状态转换时调用，避免频繁强制显示影响用户体验。
 
 [本节为通用建议，无需特定文件引用]
 
@@ -383,15 +427,18 @@ TSVC --> LS["localStorage(浏览器)"]
   - 检查 settingsStore 的 load/save 是否正常调用；utools.dbStorage 可能因权限或沙盒限制不可用时回退至 localStorage。
 - 窗口状态异常
   - 确认 statusStore 的 isOnWindow 状态与 ut.onHide 回调中的 isKill 参数一致；避免在插件被结束时仍保留计时任务。
+- **强制窗口显示问题**
+  - 检查 `forceShowWindow()` 是否在正确的时机调用（仅在关键状态转换时）；确认 utools 环境下 API 可用。
 
 **章节来源**
 - [App.vue:82-106](file://src/App.vue#L82-L106)
 - [timerService.ts:59-118](file://src/services/timerService.ts#L59-L118)
-- [utools.ts:101-122](file://src/utils/utools.ts#L101-L122)
+- [utools.ts:115-121](file://src/utils/utools.ts#L115-L121)
 - [settingsStore.ts:39-84](file://src/stores/settingsStore.ts#L39-L84)
+- [timingStore.ts:128-131](file://src/stores/timingStore.ts#L128-L131)
 
 ## 结论
-该插件通过预加载注入与统一 API 封装，实现了在 utools 环境下的稳定运行与跨环境兼容。计时服务与状态管理解耦清晰，生命周期事件与 UI 交互自然衔接，适合作为 utools 插件开发的参考范例。
+该插件通过预加载注入与统一 API 封装，实现了在 utools 环境下的稳定运行与跨环境兼容。**新增的强制窗口显示能力**进一步增强了用户体验，确保重要提醒不会被用户忽略。计时服务与状态管理解耦清晰，生命周期事件与 UI 交互自然衔接，适合作为 utools 插件开发的参考范例。
 
 [本节为总结，无需特定文件引用]
 
@@ -408,14 +455,20 @@ TSVC --> LS["localStorage(浏览器)"]
 - 环境检测与兼容
   - 使用 settings.ts 的 isDev 判断开发环境；utools.ts 的 isUtoolsEnv 与降级方案保证浏览器调试可用。
   - 示例路径：[settings.ts:4-7](file://src/settings.ts#L4-L7)、[utools.ts:5-11](file://src/utils/utools.ts#L5-L11)
+- **强制窗口显示最佳实践**
+  - 仅在关键状态转换时使用 `forceShowWindow()`，避免频繁强制显示影响用户体验。
+  - 在从专注状态切换到休息状态时调用，确保用户注意到重要提醒。
+  - 示例路径：[timingStore.ts:128-131](file://src/stores/timingStore.ts#L128-L131)、[utools.ts:86-92](file://src/utils/utools.ts#L86-L92)
 - 最佳实践
   - 在 onHide 且 isKill 为真时彻底释放计时与后台任务，避免资源泄漏。
   - 在高频刷新场景（如 onEnter）与低频场景（如 onHide）间动态调整刷新间隔。
   - 优先使用 Electron Notification 与 utools.dbStorage，浏览器降级仅作兜底。
+  - 合理使用强制窗口显示功能，平衡用户体验与提醒效果。
 
 **章节来源**
 - [App.vue:56-114](file://src/App.vue#L56-L114)
 - [settingsStore.ts:39-84](file://src/stores/settingsStore.ts#L39-L84)
-- [utools.ts:5-122](file://src/utils/utools.ts#L5-L122)
+- [utools.ts:5-121](file://src/utils/utools.ts#L5-L121)
 - [settings.ts:4-7](file://src/settings.ts#L4-L7)
 - [timerService.ts:59-118](file://src/services/timerService.ts#L59-L118)
+- [timingStore.ts:128-131](file://src/stores/timingStore.ts#L128-L131)
